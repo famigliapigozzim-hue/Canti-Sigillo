@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Canti - Nel Sigillo del Dio Vivente</title>
+	<meta name="theme-color" content="#1e3a8a">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+	<link rel="manifest" href="manifest.json">
+
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-muted: #64748b;
+            --accent: #1e3a8a;
+            --accent-hover: #1d4ed8;
+            --border: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border: #334155;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--accent);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			transition: top 0.3s ease; /*Barra blu scorrevole */
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: calc(100vh - 4rem);
+        }
+
+        .search-container {
+            margin-bottom: 1.5rem;
+            position: sticky;
+            top: 4rem;
+            background-color: var(--bg-primary);
+            padding: 0.5rem 0;
+            z-index: 40;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .song-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.1s, border-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .song-card:active {
+            transform: scale(0.99);
+        }
+
+        .song-card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .song-card-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.75rem;
+        }
+
+        .btn-back {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .lyrics-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            white-space: pre-wrap; /* Mantiene la formattazione dei testi */
+            font-size: 1.1rem;
+            word-wrap: break-word;
+        }
+
+        /* Controlli per la dimensione dei font */
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .font-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 0.25rem;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <span class="app-title" id="nav-title">Libretto Canti - Nel Sigillo del Dio Vivente</span>
+            <div class="header-controls">
+                <div class="font-controls">
+                    <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+                    <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+                </div>
+                <button class="btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">🌓</button>
+				<!-- SOTTO IL TITOLO PRINCIPALE NELL'INDICE -->
+				<!--<h1 style="margin-bottom: 0;">Nel Sigillo del Dio Vivente</h1> -->
+				<small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.2rem; font-weight: normal;">
+					Versione_2026-1.0
+				</small>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- SEZIONE LISTA CANTI -->
+        <div id="list-view" class="view-section active">
+            <div class="search-container">
+                <input type="text" id="search-bar" class="search-input" placeholder="Cerca per titolo o testo..." oninput="filterSongs()">
+            </div>
+            <div id="songs-list"></div>
+        </div>
+
+		<!-- SEZIONE DETTAGLIO CANTO CON FRECCE DI NAVIGAZIONE -->
+		<div id="detail-view" class="view-section">
+		<!--	<div class="detail-header" style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; width: 100%;">
+				<button class="btn-back" onclick="showListView()">← Indice</button>
+			<div style="display: flex; gap: 0.5rem;"> 
+				<button class="btn-back" id="btn-prev" onclick="prevSong()">◀ Prec.</button> 
+				<button class="btn-back" id="btn-next" onclick="nextSong()">Succ. ▶</button> 
+				</div> 
+				</div> 
+		-->
+				
+			<div class="detail-header" id="detail-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; position: sticky; top: 0; background: var(--bg-color, white); z-index: 100; transition: transform 0.3s ease; padding: 0.5rem 0;">
+				<button class="btn-back" onclick="showListView()">← Indietro</button>
+				<span id="song-counter" style="color: var(--text-muted); font-weight: bold; font-size: 1rem;"></span>
+				<div style="display: flex; gap: 0.5rem;">
+					<button class="btn-back" id="btn-prev" onclick="prevSong()">◀ Prec.</button>
+					<button class="btn-back" id="btn-next" onclick="nextSong()">Succ. ▶</button>
+				</div>
+			</div>
+			<div style="margin-top: 1rem; margin-bottom: 1rem;">
+		<!--		<h1 class="detail-title" id="song-title">Titolo Canto</h1> -->
+			</div>
+			<div class="lyrics-container" id="song-lyrics">Testo del canto...</div>
+		</div>
+    </main>
+    <script>
+        // DATABASE INTEGRALE DI TUTTI I CANTI 
+        const databaseCanti = [
+            {
+                titolo: "Abba’",
+                testo: `Non sono degno di essere qui, ho abbandonato la tua casa,
+ho dissipato i tuoi beni, Padre ho peccato contro il cielo e contro di Te.
+
+<b>Abbà, misericordia Abbà, Misericordia Abbà, Abbà.
+Abbà, misericordia Abbà, Misericordia Abbà, Abbà, Abbà.</b>
+
+Non sono degno di essere tuo figlio, in Gesù Cristo rialzami e in Lui ridammi la vita, Padre ho peccato contro il cielo e contro di Te.
+<b>Rit. (x2)</b>
+
+Non sono degno del tuo amore, riempi il mio cuore del tuo Spirito, insieme a Te farò festa per sempre, Padre ho peccato contro il cielo e contro di Te.
+<b>Rit. (x2)</b> `
+            },
+			{
+                titolo: "A Betlemme di Giudea - (Gloria in excelsis Deo)",
+                testo: `A Betlemme di Giudea una gran luce si levò,
+nella notte sui pastori scese l’annuncio e si cantò:
+<b>“Gloria in excelsis Deo!” (2 v.)</b>
+
+Cristo nasce sulla paglia, figlio del Padre, «Dio-con-noi»;
+Verbo eterno, Re di pace, pone la tenda in mezzo ai suoi.
+<b>“Gloria in excelsis Deo!” (2 v.)</b>
+
+Tornerà nella sua gloria quando quel giorno arriverà;
+se lo accogli nel tuo cuore, tutto il suo regno ti darà. `
+            },
+            {
+                titolo: "Abbracciami",
+                testo: `Gesù, Parola viva e vera
+Sorgente che disseta e cura ogni ferita
+Ferma su di me i tuoi occhi
+La tua mano stendi e donami la vita
+
+<b>Abbracciami Dio dell'eternità
+Rifugio dell'anima, grazia che opera
+Riscaldami fuoco che libera
+Manda il Tuo Spirito, Maranathà Gesù</b>
+
+Gesù asciuga il nostro pianto
+Leone vincitore della tribù di Giuda
+Vieni nella tua potenza
+Questo cuore sciogli con ogni sua paura
+
+<b>Rit.</b>
+
+Per sempre io canterò la tua immensa fedeltà
+Il tuo spirito in me in eterno ti loderà
+Per sempre io canterò la tua immensa fedeltà
+Il tuo spirito in me in eterno ti loderà
+
+<b>Rit.</b>
+
+Riscaldami fuoco che libera
+Manda il tuo Spirito, Maranathà Gesù
+Riscaldami fuoco che libera
+Manda il tuo Spirito, Maranathà Gesù`
+            },
+            {
+                titolo: "Adeste Fideles",
+                testo: `Adeste fideles læti triumphantes,
+venite, venite in Bethlehem.
+Natum videte Regem angelorum.
+
+<b>Venite adoremus <i>(x3)</i>
+Dominum.</b>
+
+En grege relicto humiles ad cunas,
+vocati pastores adproperant,
+et nos ovanti gradu festinemus.
+<b>Rit.</b>
+
+Æterni Parentis splendorem æternum,
+velatum sub carne videbimus,
+Deum infantem pannis involutum.
+<b>Rit.</b>
+
+Pro nobis egenum et fœno cubantem
+piis foveamus amplexibus;
+sic nos amantem quis non redamaret
+<b>Rit.</b>`
+            },
+            {
+				titolo: "Altissimo",
+				testo: `Altissimo, onnipotente, buon Signore,
+Tue son le lodi, la gloria, l’onore ed ogni benedizione
+che a Te solo e al Tuo nome altissimo possiamo elevare,
+e nessun uomo può credersi degno di poterti nominare.
+
+Laudato sii, mi’ Signore, con tutte le Tue creature,
+specialmente per frate sole così bello e radioso:
+con la sua luce illumini il giorno ed illumini noi
+e con grande splendore ci parla di Te, Signore.
+
+<b>Lodate e benedite il Signore,
+ringraziate e servite con grande umiltà.
+Lodate. lodate, benedite il Signore con grande umiltà,
+ringraziate e servite con grande umiltà.</b>
+
+Laudato sii, mi’ Signore, per sora luna e le stelle:
+le hai formate nel cielo così chiare, preziose e belle;
+per frate vento, per l’aria, il sereno ed ogni tempo,
+così la vita Tu cresci e sostieni in ogni Tua creatura.
+
+Laudato sii, mi’ Signore, per sora acqua così preziosa,
+per frate fuoco giocoso e potente che c’illumina la notte;
+laudato sii, mi’ Signore, per sora nostra madre, la terra:
+ci sostiene, governa e ci dona fiori, frutti ed erba.
+<b>Rit.</b>
+
+Laudato sii, mi’ Signore, per quelli che per il Tuo amore
+perdonano e sopportano in pace ogni persecuzione,
+che sora morte ha trovato viventi nella Tua volontà:
+da Te, Altissimo, un giorno saranno da Te incoronati.
+<b>Rit.</b>`
+
+			},
+			{
+                titolo: "Apri i miei occhi Signore",
+                testo: `Apri i miei occhi, Signore
+				
+Aprimi gli occhi del cuor
+Voglio vederti, voglio vederti
+Apri i miei occhi, Signore
+Aprimi gli occhi del cuor
+Voglio vederti, voglio vederti
+
+<b>… Vederti splendere, Signor
+Nella luce della tua gloria
+Ricolmi del tuo amor
+Cantiamo, "Santo, Santo, Santo”</b>
+
+… Apri i miei occhi, Signore
+Aprimi gli occhi del cuor
+Voglio vederti, voglio vederti
+Apri i miei occhi, Signore
+Aprimi gli occhi del cuor
+Voglio vederti, voglio vederti
+<b>Rit. (x3)</b>
+… Santo, Santo, Santo (Santo, Santo, Santo)
+Santo, Santo, Santo (Santo, Santo, Santo)
+Santo, Santo, Santo, voglio vederti (voglio vederti)
+Santo, Santo, Santo (Santo)
+Santo, Santo, Santo (Santo)
+Santo, Santo, Santo, voglio vederti (voglio vederti) <b>(N. volte)</b>`
+            },
+            {
+                titolo: "Ave Maria Verbum Panis",
+                testo: `<b>Ave Maria, Ave. Ave Maria, Ave.</b>
+
+Donna dell’attesa e madre di speranza, ora pro nobis.
+Donna del sorriso e madre del silenzio, ora pro nobis.
+Donna di frontiera e madre dell’ardore, ora pro nobis.
+Donna del riposo e madre del sentiero, ora pro nobis.
+<b>Rit.</b>
+
+Donna del deserto e madre del respiro, ora pro nobis.
+Donna della sera e madre del ricordo, ora pro nobis.
+Donna del presente e madre del ritorno, ora pro nobis.
+Donna della terra e madre dell’amore, ora pro nobis.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Benedetto Signore",
+                testo: `Cerco solo Te mio Signor
+Perché solo Tu dai gioia al mio cuore.
+Si rallegra l'anima mia
+Solo in Te, solo in Te.
+
+Cerco solo Te mio Signor
+Perché la Tua via conduce alla vita.
+Si rallegra l'anima mia
+Solo in Te, solo in Te.
+
+<b>Benedetto il Signore
+Benedetto il Tuo nome
+Come un tenero padre
+Sei verso di me, mio Signor</b>
+
+<b>Benedetto il Signore
+Benedetto il Tuo nome
+Dalle Tue mani questa mia vita
+Riceve salvezza e amor</b>
+
+Cerco solo Te mio Signor
+Perché la Tua grazia rimane in eterno.
+Si rallegra l'anima mia
+Solo in Te, solo in Te.
+
+Cerco solo Te mio Signor
+Perché mi colori di misericordia.
+Si rallegra l'anima mia
+Solo in Te, solo in Te
+<b> Rit. (x3)</b>`
+            },
+            {
+                titolo: "Che magnifico nome è",
+                testo: `Sei la Parola dal principio
+Uno con l'Altissimo
+Nella creazione la Tua gloria
+Rivelata in Te, Gesù
+
+<b>Che magnifico Nome è
+Che magnifico Nome è
+Il nome di Gesù, mio Re
+Che magnifico Nome è
+Incomparabile
+Che magnifico Nome è il Suo Nome</b>
+
+Per averci più vicino sei sceso in terra qui tra noi
+perdonati dal tuo amore. Cosa ci dividerà?
+
+<b>Che splendido Nome è
+Che splendido Nome è
+Il nome di Gesù, mio Re
+Che splendido Nome è
+Incomparabile
+Che splendido Nome è il suo Nome (x 2 volte)</b>
+
+La morte è vinta, il velo è spezzato
+La tomba è vuota per sempre
+Il cielo proclama la Tua gloria
+Perché sei risorto, mio Gesù
+Senza rivali, senza eguali
+Ora e per sempre, Tu sei Re
+Tuo è il Regno, Tua è la gloria
+Santo il Tuo Nome, mio Gesù
+
+<b>Che potente Nome è
+Che potente Nome è
+Il nome di Gesù, mio Re
+Che potente Nome è
+Incomparabile
+Che potente Nome è il suo Nome (x 2)</b>
+
+Che potente Nome è il suo Nome
+Che potente Nome è il suo Nome
+
+* * * * * *
+<i><b>Lettera ai Filippesi 2,9-11</b>
+Perciò Dio lo ha innalzato e gli ha dato il nome che è al di sopra di ogni altro nome; affinché nel nome di Gesù si pieghi ogni ginocchio nei cieli, sulla terra e sottoterra; e ogni lingua confessi che Gesù Cristo è il Signore, alla gloria di Dio Padre.</i>`
+            },
+            {
+                titolo: "Chiamati per nome",
+                testo: `<b>Veniamo da te, chiamati per nome.
+Che festa, Signore, tu cammini con noi.
+Ci parli di te, per noi spezzi il pane,
+ti riconosciamo e il cuore arde: sei Tu!
+E noi tuo popolo siamo qui.</b>
+
+Siamo come terra ed argilla e la tua Parola ci plasmerà,
+brace pronta per la scintilla e il tuo Spirito soffierà, c’infiammerà.
+<b>Rit.</b>
+
+Siamo come semi nel solco, come vigna che il suo frutto darà,
+grano del Signore risorto, la tua messe che fiorirà d’eternità.
+<b>Rit.</b>
+E noi tuo popolo siamo qui. 
+Siamo qui.`
+            },
+            {
+                titolo: "Come ti ama Dio",
+                testo: `Io vorrei saperti amare come Dio,
+che ti prende per mano ma ti lascia anche andare.
+Vorrei saperti amare senza farti mai domande,
+felice perché esisti e così io posso darti il meglio di me.
+
+<b>Con la forza del mare, l’eternità dei giorni, la gioia dei voli, 
+la pace della sera, l’immensità del cielo: come ti ama Dio.</b>
+
+Io vorrei saperti amare come ti ama Dio, che ti conosce e ti accetta come sei.
+Tenerti fra le mani come voli nell’azzurro,
+felice perché esisti e così io posso darti il meglio di me.
+<b>Rit.</b>
+
+Io vorrei saperti amare come Dio,
+che ti fa migliore con l’amore che ti dona. Seguirti fra la gente con la gioia che hai dentro,
+felice perché esisti e così io posso darti il meglio di me.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Dall’aurora Tu sorgi più bella",
+                testo: `Dell'aurora tu sorgi più bella, coi tuoi raggi fai lieta la terra
+e fra gli astri che il cielo rinserra, non v'è stella più bella di te.
+
+<b>Bella tu sei qual sole, bianca più della Luna
+e le stelle più belle, non son belle al par di te.</b>
+
+Gli occhi tuoi son più belli del mare, la tua fronte ha il colore del giglio,
+le tue gote baciate dal Figlio, son due rose e le labbra son fior.
+<b>Rit.</b>
+
+Delle perle tu passi l'incanto, la bellezza tu vinci dei fiori,
+tu dell'iride eclissi i colori, il tuo viso rapisce il Signor.
+<b>Rit.</b>
+
+Ti incoronano dodici stelle, della luna si incurva l'argento;
+ai tuoi piè spiega l'alito il vento, il tuo manto ha il colore del mar.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Davanti al Re",
+                testo: `Davanti al Re ci inchiniamo insieme
+Per adorarlo con tutto il cuor
+Verso di lui eleviamo insieme
+Canti di gloria al nostro Re dei Re (x2)`
+            },
+			{
+                titolo: "Dio grande Dio",
+                testo: `Glorioso re dei re
+Vestito di maestà
+La terra gioirà, la terra gioirà
+
+C'è luce intorno al re
+La voce sua si udrà
+Il male tremerà, il male tremerà
+
+<b>Dio grande Dio
+Canta che Dio grande è Dio
+E si vedrà che grande Dio È il nostro Dio</b>
+
+Il tempo è in mano a te
+Eterno senza età
+Principio e fine sei, Principio e fine sei
+
+Padre, figlio e spirito
+Sovrana trinità
+Il leone e l'agnell, Il leone e l'agnell
+
+<b>Dio grande Dio
+Canta che Dio grande è Dio
+E si vedrà che grande Dio È il nostro Dio <i>(tante volte)</i></b>`
+            },
+            {
+                titolo: "Dona la pace",
+                testo: `Dona la pace, dona la pace
+Ai nostri cuori, oh Signore
+Dona la pace, dona la pace
+Ai nostri cuori, oh Signore
+
+<b>Resta qui insieme a noi
+Resta qui insieme a noi
+E la pace regnerà</b>
+
+Dona l'amore, …dona la gioia…`
+            },
+            {
+                titolo: "La benedizione",
+                testo: `Dio ti protegga ti benedica
+Splenda il Suo volto su te
+E la grazia Sua
+A te volga il Suo sguardo
+Pace ti dia (tutto x 2 v)
+
+AMEN, AMEN, AMEN (X2)
+
+Dio ti protegga ti benedica
+Splenda il Suo volto su te
+E la grazia Sua
+A te volga il Suo sguardo
+Pace ti dia
+
+AMEN, AMEN, AMEN (X4)
+
+Su di te sia il Suo favore
+E per mille generazioni
+La tua casa e i tuoi figli
+Ed i figli dei tuoi figli
+
+Dio sia sempre al tuo fianco
+Ti preceda e ti segua
+Tutto intorno
+Dentro di te
+Lui è con te
+Lui è con te
+
+La mattina e la sera
+Quando entri
+Quando esci
+Nel tuo pianto
+Nella gioia
+Lui è per te
+Lui è per te (TANTE VOLTE)
+
+AMEN, AMEN, AMEN (X4)
+
+Su di te sia il Suo favore
+E per mille generazioni
+La tua casa e i tuoi figli
+Ed i figli dei tuoi figli
+
+Dio sia sempre Al tuo fianco
+Ti preceda e ti segua
+Tutto intorno
+Dentro di te
+Lui è con te
+Lui è con te
+
+La mattina e la sera
+Quando entri
+Quando esci
+Nel tuo pianto
+Nella gioia
+Lui è per te
+Lui è per te (TANTE VOLTE)
+
+Quando esci
+Nel tuo pianto
+Nella gioia
+Lui è per te
+Lui è per te (TANTE VOLTE)
+
+AMEN, AMEN, AMEN (X4)`
+            },
+            {
+                titolo: "El Shaddai",
+                testo: `<b>El Shaddai, El Shaddai
+El Elyon na Adonai
+Il Tuo nome e la Tua gloria
+Sono eterni nella storia
+El Shaddai, El Shaddai
+Erkamka na Adonai
+Ti lodiamo e Ti innalziamo
+El Shaddai</b>
+
+Dal potere della Tua mano
+Hai dato un figlio ad Abramo
+Con il resto di Israele
+Tu sei stato un Dio fedele
+Per il popolo tuo oppresso
+Hai diviso il Mar Rosso
+Con forza hai liberato i figli tuoi
+<b>Rit.</b>
+
+Lungo i secoli hai mostrato
+Che da sempre ci hai amato
+Un Messia per la salvezza
+Della Tua nazione eletta
+Anche se non fu capito
+E dal mondo poi cacciato
+La più grande opera fu
+La venuta di Gesù
+<b>Rit. (X2)</b>`
+            },
+            {
+                titolo: "Fai piovere su di me",
+                testo: `<b>Fai piovere su di me, apri la porta del cielo (x2)</b>
+
+Bramo la tua unzione su di me
+Voglio aver, voglio sentir il Tuo amor avvolgere
+Bramo la tua unzione su di me
+Voglio aver, voglio sentir il Tuo amor avvolgere
+
+<b>Fai piovere su di me, apri la porta del cielo (x2)</b>
+(Tutto ripetuto più volte)`
+            },
+            {
+                titolo: "Gesù e la Samaritana",
+                testo: `Sono qui, conosco il tuo cuore,
+con acqua viva ti disseterò.
+Sono io, oggi cerco te,
+cuore a cuore ti parlerò.
+Nessun male più ti colpirà
+il tuo Dio non dovrai temere.
+Se la mia legge in te scriverò,
+al mio cuore ti fidanzerò
+e mi adorerai in Spirito e Verità.
+<b>(Tutta per 3 volte)</b>`
+            },
+            {
+                titolo: "Gesù, Padre, Spirito",
+                testo: `Geesù, Gesù….
+Paadre, Padre…
+Spirito, Spirito…`
+            },
+            {
+                titolo: "Gli angeli delle campagne",
+                testo: `Gli angeli delle campagne cantano l'inno "Gloria in ciel
+e l'eco delle montagne ripete il canto dei fedel:
+
+<b>Gloria, in excelsis Deo! Gloria, in excelsis Deo!</b>
+
+Oggi è nato in una stalla nella notturna oscurità.
+Egli, è il Verbo, s’è incarnato e venne in questa povertà.
+<b>Rit.</b>
+
+O pastori che adorate il Divino Salvator
+e con gli angeli cantate inni di gloria al Redentor.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Grande in Forza",
+                testo: `Lodino gli angeli, lodi il ciel,
+Ogni creatura celeste lassù,
+Tutto lodi Dio.
+
+Lodino gli astri lucenti del ciel,
+Lodino i mari e la terra quaggiù,
+Tutto lodi Dio.
+
+<b>Grande in forza, grande in gloria,
+Grande in grazia, Re del cielo.
+In battaglia, in prodigi,
+Grande in Sion è della terra il Re.</b>
+<i>(ripetere il canto da capo)</i>
+
+<b>RIT FINALE:</b>
+[Grande in forza, grande in gloria,
+Grande in grazia, Re del cielo.
+In battaglia, in prodigi,
+Grande in Sion e della terra il Re] <b>(x2)</b> `
+            },
+            {
+                titolo: "Grandi cose ha fatto il Signore per noi",
+                testo: `<b>Grandi cose ha fatto il Signore per noi,
+ha fatto germogliare i fiori fra le rocce.
+Grandi cose ha fatto il Signore per noi,
+ci ha riportati liberi alla nostra terra.
+
+Ed ora possiamo cantare, possiamo gridare
+l'amore che Dio ha versato su noi.</b>
+
+Tu che sai strappare dalla morte,
+hai sollevato il nostro viso dalla polvere.
+Tu che hai sentito il nostro pianto,
+nel nostro cuore hai messo un seme di felicità.
+
+Grandi cose ha fatto il Signore per noi,
+ha fatto germogliare i fiori fra le rocce.
+Grandi cose ha fatto il Signore per noi,
+ci ha riportati liberi alla nostra terra.
+
+Ed ora possiamo cantare, possiamo gridare
+l'amore che Dio ha versato su noi. `
+            },
+            {
+                titolo: "Il Gigante cadrà",
+                testo: `Il traguardo vedo Già
+Ci saranno prove ma
+La vittoria arriverà
+L'amore tuo canterò
+
+Quando vedo Gerico
+Le sue mura intorno a me
+Quanti dubbi nel mio cuor
+L'amore tuo canterooò
+Per sempre ti loderooò
+
+<b>Il gigante cadrà, il monte va giù
+Le catene Gesù hai spezzato tu
+Le bugie le Paure non ci sono più
+No niente è impossibile per te - oh oh oh / Con te - oh oh oh</b>
+
+Nella lotta spererò
+Nella guerra non cadrò
+Ogni ombra svanirà
+L'amore tuo canterooò
+Per sempre ti loderooò
+
+<b>Rit. 2 Il gigante cadrà, il monte va giù
+Le catene Gesù hai spezzato tu
+Le bugie le Paure non ci sono più
+No niente è impossibile</b>
+
+<b>Il gigante cadrà, il monte va giù
+Le catene Gesù hai spezzato tu
+Le bugie le Paure non ci sono più
+No niente è impossibile per te - oh oh oh / Con te - oh oh oh </b>
+
+Tu grande sei più alto sei, più forte sei - Geesù
+Hai vinto tu, son libero, per sempre regni Gesù
+Tu grande sei più alto sei, più forte sei – Geesù
+Hai vinto tu, son libero, per sempre regni Geesù
+<b>Rit. 2</b>`
+            },
+			{
+                titolo: "Infinitamente Grazie",
+                testo: `Che cosa ti renderò per quello che mi hai dato?
+Alzerò il mio cuore come calice di lode
+Con tutte le mie forze grido
+
+<b>Grazie, grazie, infinitamente grazie
+Grazie, grazie di ciò che sei per me-e
+Grazie Gesù, grazie Gesù
+Grazie Gesù-ùùù
+
+Grazie, grazie, infinitamente grazie
+Grazie, grazie di ciò che sei per me-e
+Grazie Gesù, grazie Gesù
+(tutto ripetuto 2 volte)
+
+Grazie, grazie, infinitamente grazie
+Grazie, grazie di ciò che sei per me-e
+Grazie Gesù, grazie Gesù </b>`
+            },
+			{
+				titolo: "Inno alla Regina della Pace (Inno di Medjugorje) ",
+				testo: `Siam venuti, Madre cara, da ogni parte della terra,
+Ti portiam le nostre pene, con le gioie e le speranze.
+
+<b>O Regina della Pace,
+il Tuo sguardo ci consoli,
+su noi posa le Tue mani,
+supplicando il Divin Figlio.</b>
+
+Guarda a Te la Chiesa intera,
+Stella estrema di salvezza;
+Ti preghiam con voce ardente:
+rendi puri i nostri cuori.
+
+Il Tuo piccolo Bijakovo,
+Međugorje tutta insieme,
+han diffuso la Tua gloria
+esaltando il Tuo bel nome.`
+			},
+            {
+                titolo: "Io mi arrendo",
+                testo: `Sono qui, prostrato davanti a Te,
+vieni Signor, vieni Signor
+Portami con corde di Amore a Te,
+ti dono il mio cuor, ti dono il mio cuor
+<b>Io m’arrendo</b>
+
+Riempimi, di grazia inondami, ho sete di Te, ho sete di Te
+Le braccia mie alzo verso di Te,
+parlami o Dio, parlami o Dio
+
+<b>Io m’arrendo, io m’arrendo
+voglio conoscerTi voglio sentirTi qui (x2) </b>
+
+<b>Il Tuo Spirito scenda su di me,
+compi, Signor, il Tuo voler in me
+La Tua gloria, o Re, mostra su di me, compi, Signor, il Tuo voler in me (x 3)
+Compi, Signor, il Tuo voler in me
+
+Io m’arrendo, io m’arrendo
+voglio conoscerTi voglio sentirTi qui (x2)
+Io m’arrendo </b>`
+            },
+            {
+                titolo: "La mia anima canta",
+                testo: `La mia anima canta la grandezza del Signore
+Il mio spirito esulta nel mio Salvatore
+Nella mia povertà l'Infinito mi ha guardata
+In eterno ogni creatura mi chiamerà beata
+
+La mia gioia è nel Signore
+Che ha compiuto grandi cose in me
+La mia lode al Dio fedele
+Che ha soccorso il suo popolo
+E non ha dimenticato le sue promesse d'amore
+
+La mia anima canta la grandezza del Signore
+Il mio spirito esulta nel mio Salvatore
+Nella mia povertà l'Infinito mi ha guardata
+In eterno ogni creatura mi chiamerà beata
+
+Ha disperso i superbi
+Nei pensieri inconfessabili
+Ha deposto i potenti
+Ha risollevato gli umili
+Ha saziato gli affamati
+E aperto ai ricchi le mani
+
+La mia anima canta la grandezza del Signore
+Il mio spirito esulta nel mio Salvatore
+Nella mia povertà l'Infinito mi ha guardata
+In eterno ogni creatura mi chiamerà beata`
+            },
+            {
+                titolo: "La voce di Maria",
+                testo: `La voce di Maria, dentro l’anima mia 
+come un balsamo scende sulle ferite e se le porta via.
+La voce di Maria dolce melodia, 
+che ti porta il cuore sempre di più nel cuore di Gesù.
+Le mani di Maria sopra l’anima mia, 
+santa benedizione la sua protezione per la vita mia.
+La voce di Maria, le mani di Maria 
+il suo sorriso dolce che mi fa cantare sei la mamma mia.
+
+Gli occhi di Maria, dentro l’anima mia 
+scavano dritto nel cuore sciogliendo il gelo e se lo porta via.
+L’amore di Maria, dolce poesia 
+che sussurra al cuore sempre di più il nome di Gesù.
+Lo sguardo di Maria, sopra l’anima mia 
+la sua tenerezza splendida bellezza immensità e armonia.
+Gli occhi di Maria, lo sguardo di Maria 
+il suo sorriso dolce che mi fa cantare sei la mamma mia.`
+            },
+            {
+                titolo: "La terra canta",
+                testo: `Si aprono i cieli - si ode un dolce suono celestial
+unito alle voci - di un popolo che vuole adorar
+e lo spirito di Dio si muove libero insieme a noi
+e il Padre gioirà vedendo la Sua Sposa adorar
+
+<b>la terra canta - il cielo adora - e tutto grida che Tu sei Santo (x2)</b>
+
+Si aprono i cieli - si ode un dolce suono celestial
+unito alle voci - di un popolo che vuole adorar
+e lo spirito di Dio si muove libero insieme a noi
+e il Padre gioirà vedendo la Sua Sposa adorar
+
+<b>la terra canta - il cielo adora - e tutto grida che Tu sei Santo (x4)</b>
+
+<b>Colui che siede sul trono è degno della gloria
+d’onore e la maestà – degno di essere innalzato, glorificato
+Lui siede sovrano, Lui ha autorità.
+Sì, Amen!
+
+Angeli uniti a noi cantano a una sola voce: Santo, Santo! (x 4)
+
+la terra canta - il cielo adora - e tutto grida che Tu sei Santo (x2)</b>`
+            },
+            {
+                titolo: "Lode al nome Tuo",
+                testo: `Lode al nome tuo dalle terre più floride
+Dove tutto sembra vivere, lode al nome tuo
+Lode al nome tuo dalle terre più aride
+Dove tutto sembra sterile, lode al nome tuo
+
+<b>Tornerò a lodarti sempre per ogni dono tuo
+E quando scenderà la notte, sempre io dirò
+"Benedetto il nome del Signor
+Lode al nome tuo
+Benedetto il nome del Signor
+Il glorioso nome di Gesù"</b>
+
+Lode al nome tuo quando il sole splende su di me
+Quando tutto è incantevole, lode al nome tuo
+Lode al nome tuo quando io sto davanti a te
+Con il cuore triste e fragile, lode al nome tuo
+<b>Rit.</b>
+Tu doni e porti via
+Tu doni e porti via
+Ma sempre sceglierò
+Di benedire te <b>(x2)</b>`
+            },
+            {
+                titolo: "Magnificat – Dio ha fatto in me cose grandi",
+                testo: `Dio ha fatto in me cose grandi, 
+Lui che guarda l’umile servo 
+e disperde i superbi nell’orgoglio del cuore.
+
+<b>Rit. L’anima mia esulta in Dio mio Salvatore (2 v.). 
+La sua salvezza canterò.</b>
+
+Lui onnipotente e santo, Lui abbatte i grandi dai troni e solleva dal fango il suo umile servo.
+<b>Rit.</b>
+
+Lui, misericordia infinita, Lui che rende povero il ricco e ricolma di beni chi si affida al suo amore.
+<b>Rit.</b>
+
+Lui, Amore sempre fedele, Lui guida il suo servo Israele e ricorda il suo patto stabilito per sempre.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Mashalem",
+                testo: `“Mashalem!” Gesù gridò
+E la terra in pieno giorno si oscurò
+Alla croce lui disse, "Sì"
+Con amore immenso al padre suo ubbidì
+Umiliato Dio tra noi (oh-oh-oh)
+Senza colpa, lui patì (oh-oh-oh)
+L'abbandono ed il dolor (oh-h-oh)
+Dormi o re, quanti sperano in te
+Mashalem, tutto si compie in te
+
+Mashalem, re dei giudei
+Che portasti il peso dei peccati miei
+La tua sete di perdonar
+E il tuo dono di infinita carità
+Nelle sante piaghe tue (oh-oh-oh)
+La gloriosa porta al ciel (oh-oh-oh)
+Dolce il chiodo che l'aprì (oh-oh-oh)
+Salva o re, quanti sperano in te
+Mashalem, tutto si compie in te
+
+Mashalem, ancora sei
+Quell'agnello che si immola lì per noi
+Oggi qui si compie in te
+Il più grande dei misteri del tuo amor
+Sangue, corpo ed anima (oh-oh-oh)
+E il divino redentor (oh-oh-oh)
+Fa' che io sia tra i santi tuoi (oh-oh-oh)
+Vieni o re, quanti sperano in te
+Mashalem, tutto si compie in te
+<b>(Tutta x 3volte)</b>`
+            },
+            {
+                titolo: "Mia forza e mio canto",
+                testo: `<b>Mia forza e mio canto è il Signore; 
+d'Israele in eterno è il Salvatore!</b>
+
+Voglio cantare in onore del Signore, perché Lui è il mio Salvatore;
+è il mio Dio lo voglio lodare, è il Dio di mio padre: lo voglio esaltare! 
+<b>Rit.</b>
+
+Il suo nome è "il Signore": la sua destra è ricolma di potenza, la sua destra annienta il nemico e lo schiaccia con vittoria infinita.
+<b>Rit.</b>
+
+Il Faraone in cor suo diceva: "li inseguirò e li raggiungerò" - Ma col tuo soffio alzasti le acque perché il tuo popolo attraversasse il mare.
+<b>Rit.</b>
+
+Soffiasti ancora e il mare ricoprì il Faraone e il suo potere; cavalli e carri e tutti i cavalieri furono sommersi nel profondo del mare. 
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Mi arrendo al Tuo nome",
+                testo: `Sotto la tua croce apro le mie braccia
+Accolgo il tuo perdono, la tua misericordia
+Adoro nel silenzio il tuo splendore
+Il volto tuo che libera il mio cuore
+
+<b>Mi arrendo al tuo amore, Signore Gesù
+Non posso restare lontano da te
+Mi arrendo al tuo amore, Signore Gesù
+Alla tua presenza per sempre resterò</b>
+
+Ai piedi della croce visiti il mio cuore
+Mi doni la tua pace, consoli la mia vita
+Contemplo la maestà della tua gloria
+Il sangue tuo che sana le ferite
+<b>Rit.</b> <i>Ripetuto</i>`
+            },
+            {
+                titolo: "Mi basta la tua grazia",
+                testo: `Quando sono debole allora sono forte
+Perché tu sei la mia forza
+Quando sono triste è in te che trovo gioia
+Perché tu sei la mia gioia
+
+Gesú, io confido in te
+Gesú, mi basta la tua grazia
+<b>Sei la mia forza, la mia salvezza
+Sei la mia pace, sicuro rifugio
+Nella tua grazia voglio restare
+Santo Signore, sempre con te</b>
+
+Quando sono povero allora sono ricco
+Perché tu sei la mia ricchezza
+Quando son malato è in te che trovo vita
+Perché tu sei guarigione
+
+Gesú, io confido in te
+Gesú, mi basta la tua grazia
+<b>Rit. (x3)</b>
+
+Quando solo debole allora sono forte
+Perché tu sei la mia forza`
+            },
+            {
+                titolo: "Mille ragioni",
+                testo: `<b>Benedici il Signor anima mia
+Loda il Suo Santo Nome
+E con tutto il mio cuor canterò
+Per sempre Ti adorerò </b>
+
+Il sole sorge su un nuovo giorno
+È tempo di cantare a Te
+Non so cosa accadrà
+Non so quello che mi aspetta
+Ma canterò finché la notte arriverà
+<b>Rit.</b>
+
+Sei lento all'ira e sei ricco in grazia
+Sei grande Dio, sempre Ti amerò
+E per la Tua bontà io resterò a cantare
+Mille ragioni ancora troverò
+<b>Rit.</b>
+
+Il giorno in cui non avrò più forza
+E il tempo mio quaggiù finirà
+La mia anima continuerà a lodarti
+Per mille anni e per l'eternità`
+            },
+            {
+                titolo: "Mi perdo nel Tuo amore",
+                testo: `Tu sei la mia pace, tu sei la vera gioia
+Tu sei il Signor
+Tu sei la mia speranza, tu sei la mia salvezza
+Tu sei il Signor
+
+<b>Ed io mi perdo nel tuo amor
+Guardando la tua santità
+Un canto nuovo nasce
+E l'uomo vecchio muore
+Risplendo della Grazia tua
+Mi perdo nel tuo amore </b>
+
+Resta con me per sempre, il mondo mi delude
+Tu (tu sei il Signor) sei il Signor
+Il mio cuore arde se ascolto la tua voce
+Tu (tu sei il Signor) sei il Signor
+<b>Rit.</b>
+
+Sei il vivente, tu sei il Cristo
+Ti riconosco tu sei il Santo
+Lode, gloria, onore a te
+Lode, gloria, onore a te
+Sei il vivente, tu sei il Cristo
+Ti riconosco tu sei il Santo
+Lode, gloria, onore a te
+Lode, gloria, onore a te
+<b>Rit.</b>
+
+Mi perdo nel tuo amore Gesù, 
+Gesù`
+            },
+            {
+                titolo: "Muoviti in Me",
+                testo: `È lo Spirito di Dio che sta in questo luogo
+è lo Spirito di Dio che sta in questo luogo
+Lui sta qui per consolar, Lui sta qui per liberar,
+Lui sta qui per guidar, è lo Spirito di Dio che sta qui.
+
+<b>Muoviti in me, muoviti in me, 
+tocca il profondo del mio cuor, 
+la mia vita col tuo amor, 
+muoviti in me, Dio Spirito muoviti in me. (2 volte)</b>`
+            },
+            {
+                titolo: "Nel nome di Gesù",
+                testo: `Può una tempesta acquietarsi ad un comando?
+Può il colore nero diventare tutto bianco?
+Può un uomo avvicinarsi a Dio che è così alto?
+Nel nome Suo si può
+
+Può il cieco catturare luce e colore?
+Può il dolore nella prova trasformarsi in sole?
+Può una montagna alzarsi e andare dove vuole?
+
+<b>Io credo, io credo
+Nel Suo nome tutto è possibile</b>
+
+Può la sterile sentire doglie e il primo pianto?
+Può un cuore arreso a Dio non essere più stanco?
+Può il muto ascoltare il suono del suo canto?
+Nel nome Suo si può
+
+Può un tempio essere rialzato in tre giorni?
+Può la fede aiutare a tutelare i sogni?
+Può un uomo osservare oltre gli orizzonti?
+
+<b>Io credo, io credo
+Nel Suo nome tutto è possibile (x 2)</b>
+
+<b>Nel nome di Gesù
+Nel nome di Gesù
+Nel nome di Gesù
+È possibile (x 2)</b>
+
+<b>Io credo, io credo
+Nel Suo nome tutto è possibile
+Nel nome di Gesù </b>`
+            },
+            {
+                titolo: "Nel Tuo Nome",
+                testo: `Sorga Dio, i suoi nemici si disperdano,
+come fumo si dissolve chi l’odia,
+perirà davanti a Dio.
+
+Fondimi, plasmami, riempimi Spirito Santo con il tuo amore,
+Io t’invoco, Dio della Pace, brucia ogni male nel cuore,
+guarisci ogni mia infermità nel nome di Cristo Gesù, del sangue suo dato per noi.
+
+Via il serpente perfido che inganna il mondo e gli eletti di Dio,
+Nel tuo nome si pieghi ogni cosa nei cieli, in terra e sotto terra.
+Gloria a Te Dio Padre, Dio Figlio, Dio Spirito Santo.
+
+In nome del Verbo di Dio fatto carne salvezza di ognuno di noi, che fino alla morte obbedì: via!
+Venga in mio aiuto chi gli schiacciò il capo, la Vergin Maria.
+
+<b>Via da me, via da me il nemico della salvezza mia!
+Salvami, difendimi sotto la tua potente mano, o Dio,
+Tu che sei il mio Re, il Cristo, su cui potere non ha, 
+tremi e fugga davanti al tuo Nome santo e terribile.
+Via da me nel nome di Gesù, via da me. </b>
+
+Dio non avrò timore del Male se Tu agisci in me con potenza,
+Armami della tua grazia contro le tenebre dei Principati e delle Potestà,
+Spezza ogni malvagità, sia libera la vita mia.
+Via! Scaccia il veleno di chi seduce l’umanità,
+
+Creatore eterno di tutte le cose visibili ed invisibili.
+Ti supplichiamo di liberarci da ogni insidia del Male che attenta alla nostra anima: sciogli ogni sua falsità, svanisca la sua tirannia,
+O Dio, rendimi incolume, salva il tuo servo, santificami.
+<b>Via da me nel nome di Gesù, via da me.</b>`
+            },
+            {
+                titolo: "Olio che consacra",
+                testo: `<b>Olio che consacra, olio che profuma,
+olio che risana le ferite che illumina. (x2)</b>
+
+Il tuo olio santifica, Spirito di Dio, con la tua fiamma consacrami.
+Tu sapienza degli umili, Spirito di Dio, sul tuo cammino conducimi. 
+<b>Rit.</b>
+
+Fa di me un’immagine, Spirito di Dio, del tuo amore che libera.
+Tu speranza degli umili, Spirito di Dio, rocca invincibile, proteggimi.
+<b>Rit.</b>
+
+Senza te sono fragile, Spirito di Dio, la tua forza infondimi.
+Le ferite risanami, Spirito di Dio, tu guarigione dell’anima.
+<b>Rit.</b>
+
+Tu mistero insondabile, Spirito di Dio, i tuoi segreti rivelami.
+La tua voce mi abita, Spirito di Dio, quando t’invoco, rispondimi.
+<b>Rit.</b>
+
+Il tuo olio è un balsamo, Spirito di Dio, consolatore, guariscimi.
+Fa’ di noi un popolo, Spirito di Dio, nel tuo amore uniscici.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "O Signore guardami (Il Canto dell’Emorroissa)",
+                testo: `O Signore guardami, nella fede sono qui
+Per toccare appena il lembo del mantello
+E la forza che verrà sarà come unguento che
+Mi risanerà e guarita io sarò
+
+<b>Gesù, Gesù, vieni in me e guariscimi
+Gesù, vieni in me e nella tua pace io vivrò </b>
+
+O Signore guardaci, nella fede siamo qui
+Il tuo nome è potenza che guarisce
+E se il mondo finirà, la parola resterà
+Perché Tu sei via, vita e verità
+
+<b>Gesù, Gesù, vieni in noi e guariscici
+Gesù, vieni in noi e nella tua pace noi vivremo </b>
+
+O Signore guardaci, ai tuoi piedi siamo qui
+Tu ci chiami alla presenza del tuo amore
+Ed il cuore canta già la tua grande fedeltà
+Tu ci doni vita nuova e libertà
+
+<b>Gesù, Gesù, vieni in noi e guariscici
+Gesù, vieni in noi e nella tua pace noi vivremo
+Gesù, Gesù, vieni in noi e guariscici </b>
+O Gesù, vieni in noi
+E nella tua pace noi vivremo
+E nella tua pace noi vivremo
+E nella tua pace io vivrò`
+            },
+            {
+                titolo: "Re dei Re – Dio dell’impossibile",
+                testo: `Hai sollevato i nostri volti dalla polvere
+Le nostre colpe hai portato su di te
+Signore ti sei fatto uomo in tutto come noi Per amore
+
+<b>Figlio dell'Altissimo, povero tra i poveri Vieni a dimorare tra noi
+Dio dell'impossibile, Re di tutti i secoli Vieni nella tua maestà </b>
+
+<b>Re dei re, i popoli ti acclamano I cieli ti proclamano re dei re
+Luce degli uomini, regna col tuo amore tra noi, noi, noi, noi </b>
+
+Ci hai riscattati dalla stretta delle tenebre Perché potessimo glorificare te
+Hai riversato in noi la vita del tuo Spirito Per amore
+<b>Rit.</b>
+
+Tua è la gloria per sempre-eee
+Tua è la gloria per sempre-eee
+Gloria, gloria, gloria, gloria
+<b>Rit.</b> `
+            },
+            {
+                titolo: "Quando lo Spirito vive in me",
+                testo: `Quando lo Spirito vive in me, io canto come David. (2v)
+Io canto, io canto, io canto come David. (2v)
+
+…io lodo come David
+…io esulto come David
+…io danzo come David
+…io prego come David
+…io amo come David`
+            },
+            {
+                titolo: "Risanami (Koinonia)",
+                testo: `Risanami, risanami, risanami, per il tuo sangue
+Risanami, risanami, risanami
+
+<b>Vieni in me Gesù, vieni in me
+fa' scorrere l’acqua del tuo amore dentro di me
+Vieni in me, Gesù, vieni in me
+risanami e guarisci, vieni in me </b>
+
+Guariscimi, guariscimi, guariscimi, per le tue piaghe
+guariscimi, guariscimi, guariscimi
+<b>Rit. (x2)</b>
+
+Strumentale
+<b>Rit. (x2)</b>`
+            },
+            {
+                titolo: "Sono qui a lodarti",
+                testo: `Luce del mondo nel buio del cuore
+Vieni ed illuminami
+Tu mia sola speranza di vita
+Resta per sempre con me
+
+<b>Sono qui a lodarti, qui per adorarti
+Qui per dirti che tu sei il mio Dio
+E solo tu sei Santo, sei meraviglioso
+Degno e glorioso sei per me </b>
+
+Re della storia e Re della gloria
+Sei sceso in terra fra noi
+Con umiltà il tuo trono hai lasciato
+Per dimostrarci il tuo amor
+<b>Rit.</b>
+
+Io mai saprò quanto ti costò
+Lì sulla croce morir per me (x 4)
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Spirito Santo vieni nel mio cuor",
+                testo: `Spirito Santo vieni nel mio cuor
+Col tuo amore infiammalo. (x2)
+
+Spirito Santo vieni nel mio cuor
+Della tua pace ricolmalo (x2)
+
+Spirito Santo vieni nel mio cuor
+Della tua gioia riempilo (x2)
+
+Alleluia, alleluia, alleluia, alleluia (x2)`
+            },
+            {
+                titolo: "Shema Israel",
+                testo: `<b>Shema Israel, Shema Israel
+Adonai Eloheinu. (x2)
+Adonai Eḥad, Adonai Tzichenu,
+Adonai Yeshua teinu. (x2)</b>
+
+<b><i>(Ripetere tutto 2 volte)</i></b>
+Baruch shem kvod malchuto,
+Malchuto lè olam - lè olam va'ed. (x2)
+
+<b><i>(Ripeti tutto da capo)</i></b>
+<b>Adonai Eḥad, Adonai Tzichenu,
+Adonai Yeshua teinu. (x2)</b>
+Baruch shem kvod malchuto,
+Malchuto lè olam - lè olam va'ed (x2)
+
+Malchuto lè olam - lè olam va'ed (x2)
+
+Traduzione:
+Ascolta Israele, il Signore è il tuo Dio.
+Il Signore è uno, il Signore è giustizia, il Signore è la nostra salvezza.
+Benedetto il suo Nome glorioso nel quale regna, Regna per sempre in eterno.`
+            },
+            {
+                titolo: "Stai con me",
+                testo: `Stai con me, proteggimi
+Coprimi con le tue ali, o Dio
+
+<b>Quando la tempesta arriverà
+Volerò più in alto insieme a te
+Nelle avversità sarai con me
+Ed io saprò che tu sei il mio Re </b>
+
+Il cuore mio riposa in te
+Io vivrò in pace e verità
+<b>Rit.</b>
+
+Quando la tempesta arriverà
+Volerò più in alto insieme a te
+Nelle avversità sarai con me
+Ed io saprò che tu sei il mio Re
+Ed io saprò che tu sei il mio Re
+Ed io saprò che tu sei il mio Re
+<b>Rit.</b> `
+            },
+            {
+                titolo: "Su Ali d’Aquila",
+                testo: `Tu che abiti al riparo del Signore
+e che dimori alla sua ombra
+dì al Signore mio rifugio,
+mia roccia in cui confido.
+
+<b>E ti rialzerà, ti solleverà su ali d'aquila,
+ti reggerà sulla brezza dell'alba,
+ti farà brillar come il sole,
+così nelle sue mani vivrai. </b>
+
+Dal laccio del cacciatore ti libererà
+e dalla carestia che distrugge
+poi ti coprirà con le sue ali
+e rifugio troverai.
+<b>Rit.</b>
+
+Non devi temere i terrori della notte
+né freccia che vola di giorno,
+mille cadranno al tuo fianco,
+ma nulla ti colpirà.
+<b>Rit.</b>
+
+Perché ai suoi angeli ha dato un comando
+di preservarti in tutte le tue vie,
+ti porteranno sulle loro mani,
+contro la pietra non inciamperai.
+<b>Rit.</b>
+
+<b>E ti rialzerò, ti solleverò
+Su ali d'aquila ti reggerò
+Sulla brezza dell'alba ti farò brillar
+Come il sole, così nelle mie mani vivrai </b>`
+            },
+            {
+                titolo: "Svegliati o Sion",
+                testo: `<b>Svegliati, svegliati o Sion metti le vesti più belle
+scuoti la polvere ed alzati Santa Gerusalemme.</b>
+
+Ecco ti tolgo di mano
+il calice della vertigine
+la coppa della mia ira
+tu non berrai più.
+<b>Rit.</b>
+
+Sciogli dal collo i legami
+e leva al cielo e tuoi occhi
+schiava figlia di Sion io ti libererò.
+<b>Rit.</b>
+
+Come son belli sui monti
+i piedi del messaggero.
+Colui che annunzia la pace
+è messaggero di bene.
+<b>Rit. (x2)</b>
+
+santa Gerusalemme… santa Gerusalemme… santa Gerusalemme!`
+            },
+            {
+                titolo: "Ti loderò, Ti adorerò, Ti canterò",
+                testo: `Vivi nel mio cuore
+Da quando ti ho incontrato
+Sei con me, o Gesù
+Accresci la mia fede
+Perché io possa amare
+Come te, o Gesù
+
+Per sempre io ti dirò il mio grazie
+E in eterno canterò
+
+<b>Ti loderò, ti adorerò
+Ti canterò che sei il mio Re
+Ti loderò, ti adorerò
+Benedirò soltanto te
+Chi è pari a te Signor
+Eterno amore sei
+Mio Salvator risorto per me
+Ti adorerò
+Ti canterò che sei il mio Re
+Ti loderò, ti adorerò
+Benedirò soltanto te</b>
+
+Nasce in me, Signore
+Il canto della gioia
+Grande sei, o Gesù
+Guidami nel mondo
+Se il buio è più profondo
+Splendi tu, o Gesù
+Per sempre io ti dirò il mio grazie
+E in eterno canterò
+<b>Rit.</b>
+
+Ti loderò, ti adorerò
+Benedirò soltanto te
+
+Ti loderò, ti adorerò, ti canterò
+Ti loderò, ti adorerò, ti canterò
+
+Gesù, Gesù `
+            },
+            {
+                titolo: "Talita’ Kum",
+                testo: `Signore Gesù, le mani tue piagate
+Stendi su me con il tuo grande amore
+Tu che mi hai redento morendo sulla croce
+Passa e guarisci come in Galilea
+
+<b>Talità kum, io ti guarisco
+Talità kum, io ti risano
+Talità kum, sono qui per te
+Rialzati ancora (X2)</b>
+
+Signore Gesù, fonte d'acqua viva
+Fermati qui, di me abbi pietà
+Non guardare al mio peccato
+Ti prego o Signore
+Passa e perdona come in Galilea
+<b>Rit.</b>
+
+Signore Gesù, io so che agirai
+Dentro il mio cuor la pace cresce già
+Tu che sei speranza dell'umanità
+Passa ancora e libera Come in Galilea
+
+<b>Talità kum, tu mi guarisci
+Talità kum, Tu mi risani
+Talità kum, Tu sei qui per me
+Rialzami ancora (x2)</b>`
+            },
+            {
+                titolo: "Tu sei Re",
+                testo: `Tu sei Re, Tu sei Re, sei Re, Gesù!
+Tu sei Re, Tu sei Re, sei Re, Gesù!
+
+[Noi eleviamo i nostri cuori,
+Noi eleviam le nostre mani
+Rivolte verso il Tuo trono lodando Te] <b>(x2)</b>
+
+Tu sei Re, Tu sei Re, sei Re, Gesù!
+Tu sei Re, Tu sei Re, sei Re, Gesù!`
+            },
+            {
+                titolo: "Tu scendi dalle stelle",
+                testo: `Tu scendi dalle stelle, o Re del cielo, e vieni in una grotta al freddo e al gelo, e vieni in una grotta al freddo e al gelo.
+O Bambino mio divino, io ti vedo qui tremar; o Dio beato!
+Ahi quanto ti costò l’avermi amato! ahi quanto ti costò l’avermi amato!
+
+A te, che sei del mondo il Creatore, mancano panni e foco, o mio Signore, mancano panni e foco, o mio Signore.
+Caro eletto pargoletto, quanto questa povertà più m’innamora,
+giacché ti fece amor povero ancora, giacché ti fece amor povero ancora.
+
+Tu lasci il bel gioir del divin seno, per venire a penar su questo fieno, per venire a penar su questo fieno.
+Dolce amore del mio core, dove amor ti trasportò? O Gesù mio, perciò tanto patir? Per amor mio! perciò tanto patir? Per amor mio!`
+            },
+            {
+                titolo: "Tutta la terra attende impaziente",
+                testo: `<b>Tutta la terra attende impaziente
+Che si rivelino i figli di Dio
+E soffre ancora le doglie del parto
+Aspetta il suo Messia</b>
+
+Germoglio della radice di Jesse
+Ti innalzi segno per noi
+Vieni Signore a salvare il tuo popolo
+Dona la libertà
+Vieni Signore a salvare il tuo popolo
+Dona la libertà
+<b>Rit.</b>
+
+O chiave della famiglia di Davide
+Ci apri il regno di Dio
+Vieni Signore, rischiara le tenebre
+Vinci l'oscurità
+Vieni Signore, rischiara le tenebre
+Vinci l'oscurità
+<b>Rit.</b>
+
+Re delle genti sostieni la chiesa
+Pietra angolare sei tu
+Vieni Signore e salva il tuo popolo
+Tutta l'umanità
+Vieni Signore e salva il tuo popolo
+Tutta l'umanità
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Uomo di Galilea",
+                testo: `<b>Uomo di Galilea che passando vai (x4)</b>
+Ti prego di toccarmi <b>(x3)</b>
+e guarito io sarò.
+<b>Rit.</b>
+
+Ti prego di guidarmi <b>(x3)</b> 
+e la mia strada troverò.
+<b>Rit.</b>
+
+Ti prego di parlarmi <b>(x3)</b>
+e la mia vita cambierà.
+<b>Rit.</b>
+
+Ti prego di liberarmi <b>(x3)</b>
+e il mio cuore gioirà.
+<b>Rit.</b>
+
+Ti prego di donarmi <b>(x3)</b>
+il Tuo Spirito d’amor`
+            },
+            {
+                titolo: "Vento di Pentecoste",
+                testo: `Era primavera, chiusi in casa
+eran tutti con Maria gli amici Suoi,
+tristi silenziosi e in attesa
+che qualcosa succedesse anche per loro.
+
+Il ricordo dentro dell’Amico
+che era morto sulla croce
+e le sue parole una promessa
+ritornava dentro al cuore la preghiera.
+
+<b>Scendi spirito di Dio, 
+cambia il mondo come vuoi, 
+dona amore all’universo, 
+il coraggio a tutti noi. (bis)</b>
+
+Ecco all’improvviso, come un vento
+impetuoso scuote il cielo un grande rumore, e tutta la casa è riempita di un amore che non sai da dove viene.
+
+Scende nella vita un fuoco eterno che ti dà coraggio nuovo; sono riempiti dello Spirito che Cristo donerà ad ogni uomo.
+<b>Rit.</b>`
+            },
+            {
+                titolo: "Vieni Spirito Forza dall’alto",
+                testo: `Vieni Spirito, forza dall'alto nel mio cuore,
+fammi rinascere Signore, Spirito.
+Vieni Spirito, forza dall'alto nel mio cuore,
+fammi rinascere Signore, Spirito.
+
+Come una fonte vieni in me,
+come un oceano vieni in me,
+come un fiume vieni in me,
+come un fragore vieni in me.
+Rit.
+
+Come un vento vieni in me,
+come una fiamma vieni in me,
+come un fuoco vieni in me,
+come una luce vieni in me.
+Rit.
+
+Con il tuo amore vieni in me,
+con la tua pace vieni in me,
+con la tua gioia vieni in me,
+con la tua forza vieni in me.
+Rit.`
+            },
+            {
+                titolo: "Vieni o Spirito (Koinonia)",
+                testo: `Vieni, o Spirito, apri i miei occhi ed il mio cuor
+Vieni, o Spirito, riempi ogni cosa del tuo amor
+Ch’io possa vedere come vedi Tu
+Ch’io possa amare come ami tu (x2)
+
+Guidami, plasmami, toccami e trasformami
+Guidami, plasmami, la tua mano è su di me! (x3)
+Rit.
+
+Guidami, plasmami, toccami e trasformami
+Guidami, plasmami, la tua mano è su di me! (x 5 a sfumare)`
+            },
+            {
+                titolo: "Vieni Santo Spirito (Gen Verde)",
+                testo: `Vieni Santo Spirito manda a noi dal cielo, un raggio di luce, un raggio di luce.
+Vieni padre dei poveri vieni datore dei doni, luce dei cuori, luce dei cuori.
+
+Consolatore perfetto, ospite dolce dell’anima, dolcissimo sollievo, dolcissimo sollievo.
+Nella fatica riposo, nella calura riparo, nel pianto conforto, nel pianto conforto R.
+
+Luce beatissima, invadi fino all’intimo, il cuore dei tuoi fedeli, il cuore dei tuoi fedeli
+Senza la tua forza, nulla è nell'uomo Nulla senza colpa, nulla senza colpa. R.
+
+Lava ciò che è sordido, bagna ciò che è arido. Ciò che sanguina risana, ciò che sanguina risana.
+Piega ciò che è rigido, scalda ciò che è gelido, drizza ciò che è sviato, drizza ciò che è sviato. R.
+
+Dona ai tuoi fedeli, che solo in te confidano I tuoi santi doni, i tuoi santi doni
+Dona virtù e premio, dona morte santa Dona eterna gioia, dona eterna gioia. R.`
+            },
+            {
+                titolo: "Vieni Spirito Santo Vieni",
+                testo: `Vieni, Spirito Santo vieni!
+Soffio di vita vieni
+Spirito Santo vieni.
+
+In Te rinascerò dall’alto
+nelle Tue mani come il vento
+che soffia dove vuole ma non so
+di dove viene dove va…
+
+<b>…dono di luce….
+…forza di Dio….
+…dentro il mio cuore….
+…sulla tua Chiesa….</b>`
+            },
+            {
+                titolo: "Vivi da uomo santo (Comunità Ostia Viva)",
+                testo: `Se il peccato fosse più grande della Misericordia di Dio,
+Gesù ti sta domandando: per quale scopo sono morto io? <b>(x2)</b>
+
+Rit. Coraggio, alzati, come Lazzaro ti sto chiamando
+Esci dal buio e vivi da uomo santo! <b>(x2)</b>
+Vivi da uomo santooo
+
+Le tue braccia si alzino al cielo
+Apri il cuore allo Spirito Santo
+Nella prova non aver paura
+Gesù è sempre lì al tuo fianco (x2)
+<b>Rit.</b>
+
+Davide fu chiamato
+Nell’unzione si fece guidare
+Ora questo è il tuo momento
+Non lasciartelo scappare (x2)
+<b>Rit.</b>
+
+Gesù ti sta chiamando: Lazzaro! Lazzaro!
+Oggi come ieri tu, alzati! Alzati! (x2)
+<b>Rit.</b>
+
+Vivi da uomo santo (rip. 3 volte quasi parlata)
+Coraggio…`
+            },
+            {
+                titolo: "Voci di Giubilo e Vittoria",
+                testo: `Qol - rinnah wishuah
+Qol - rinnah - wishuah be ahalé zaddiqim.
+Qol - rinnah - wishuah Qol - rinnah - wishuah be ahalé zaddiqim
+
+Yemin - yemin - yemin Adonai osah - hayl. <b>(x4)</b>
+
+Voci di giubilo e vittoria nelle tende dei giusti
+Voci di giubilo e vittoria nelle tende dei giusti
+La mano del Signore ha fatto meraviglie. (x4)
+<b>Rit.</b>
+
+Yemin - yemin - yemin Adonai osah - hayl. (x4)
+Voci di giubilo e vittoria nelle tende dei giusti
+Voci di giubilo e vittoria nelle tende dei giusti
+La mano del Signore ha fatto meraviglie. <b>(x4)</b>`
+            },
+            {
+                titolo: "Yeshoua",
+                testo: `Il mio amato è il più bello tra migliaia, di migliaia <b>(X3)</b>
+Yeshua (molte volte)`
+            },
+            {
+                titolo: "Yeshoua Hammashiah",
+                testo: `Yeshouah Hamashiah, Houadon, Houadon, Likhvod elohim, Likhvod elohim haav. <b>(x 2)</b>
+
+Gesù è il Messia, è il Signore, è il Signore, a gloria di Dio, a gloria di Dio Padre. <b>(x 2)</b>`
+            },
+            {
+                titolo: "Yahweh si manifesterà",
+                testo: `Si sente la Tua gloria in mezzo a noi, compi grandi opere, risvegli in noi la fede (x2)
+Yahweh, Rapha, Elohim, Shaddai
+Jireh, Adonai si manifesterà <b>(x2)</b>
+
+Si sente la Tua gloria in mezzo a noi, compi grandi opere, risvegli in noi la fede (x2)
+Rit. <b>(x2)</b>
+
+Quando lodi Lui si manifesterà
+Se lo chiami Lui si manifesterà
+Se lo cerchi Lui si manifesterà <b>(x2)</b>
+
+Yahweh si manifesterà
+Jireh si manifesterà
+Rapha si manifesterà
+Si manifesterà
+
+Yahweh si manifesterà
+Jireh si manifesterà
+Rapha si manifesterà
+Si manifesterà
+
+Yahweh si manifesterà
+Jireh si manifesterà
+Rapha si manifesterà
+Si manifesterà
+<b>Rit. (x2)</b>
+
+Yahweh si manifesterà
+Yahweh si manifesterà`
+            }
+        ];
+
+        // Inizializzazione della dimensione globale del font (in rem)
+        let currentFontSize = 1.1;
+		// Tiene a mente l'indice della canzone corrente
+		let currentSongIndex = 0; 
+
+        function renderSongsList(songsToRender) {
+    const container = document.getElementById('songs-list');
+    container.innerHTML = '';
+    
+    if (songsToRender.length === 0) {
+        container.innerHTML = '<div class="no-results">Nessun canto trovato con questo criterio.</div>';
+        return;
+    }
+
+    songsToRender.forEach((song) => {
+        const card = document.createElement('div');
+        card.className = 'song-card';
+        
+        // Trova l'indice reale della canzone nel database globale
+        const globalIndex = databaseCanti.indexOf(song);
+        card.onclick = () => showSongDetail(globalIndex);
+
+        const infoDiv = document.createElement('div');
+        const titleSpan = document.createElement('div');
+        titleSpan.className = 'song-card-title';
+        titleSpan.textContent = (globalIndex + 1) + '. ' + song.titolo;
+
+        const snippetSpan = document.createElement('div');
+        snippetSpan.className = 'song-card-meta';
+    // INSERISCE La 1^ riga del Testo come anteprima dell'Indice
+	snippetSpan.textContent = song.testo.replace(/<[^>]*>/g, '').split('\n')[0] + '...';
+
+        infoDiv.appendChild(titleSpan);
+        infoDiv.appendChild(snippetSpan);
+        card.appendChild(infoDiv);
+        container.appendChild(card);
+    });
+}
+
+function showSongDetail(index) {
+    currentSongIndex = index; // Salva l'indice corrente
+    const song = databaseCanti[index];
+    
+    document.getElementById('list-view').classList.remove('active');
+    document.getElementById('detail-view').classList.add('active');
+    
+    //document.getElementById('song-title').textContent = song.titolo;
+    // MODIFICA QUESTA RIGA: da .textContent a .innerHTML
+	document.getElementById('song-lyrics').innerHTML = song.testo; 
+    // Aggiorna il titolo della navbar superiore con il nome della canzone
+	document.getElementById('nav-title').textContent = song.titolo;
+    
+    document.getElementById('song-counter').textContent = (index + 1) + ' / ' + databaseCanti.length;
+
+    // Gestione dei pulsanti: nasconde o disabilita se siamo all'inizio o alla fine del libretto
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    btnPrev.disabled = index === 0;
+    btnPrev.style.opacity = index === 0 ? "0.3" : "1";
+    
+    btnNext.disabled = index === databaseCanti.length - 1;
+    btnNext.style.opacity = index === databaseCanti.length - 1 ? "0.3" : "1";
+
+    window.scrollTo(0,0);
+}
+
+// NUOVA FUNZIONE: va al canto precedente
+function prevSong() {
+    if (currentSongIndex > 0) {
+        showSongDetail(currentSongIndex - 1);
+    }
+}
+
+// NUOVA FUNZIONE: va al canto successivo
+function nextSong() {
+    if (currentSongIndex < databaseCanti.length - 1) {
+        showSongDetail(currentSongIndex + 1);
+    }
+}
+
+// --- GESTIONE DEGLI SWIPE PER CAMBIARE CANZONE ---
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+// Questa funzione calcola se il movimento del dito è stato abbastanza lungo
+function handleSwipeGesture() {
+    const minDistance = 70; // Distanza minima in pixel per attivare il cambio pagina
+    
+    // Swipe da DESTRA verso SINISTRA (Dito si sposta a sinistra -> Canzone Successiva)
+    if (touchStartX - touchEndX > minDistance) {
+        nextSong();
+    }
+    
+    // Swipe da SINISTRA verso DESTRA (Dito si sposta a destra -> Canzone Precedente)
+    if (touchEndX - touchStartX > minDistance) {
+        prevSong();
+    }
+}
+
+// Colleghiamo i movimenti del dito alla schermata del dettaglio canto
+document.addEventListener('DOMContentLoaded', () => {
+    const detailView = document.getElementById('detail-view');
+
+    // Memorizza dove il dito tocca lo schermo inizialmente
+    detailView.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    // Memorizza dove il dito si stacca dallo schermo e calcola il movimento
+    detailView.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipeGesture();
+    }, { passive: true });
+});
+
+        function filterSongs() {
+            const query = document.getElementById('search-bar').value.toLowerCase().trim();
+            if (!query) {
+                renderSongsList(databaseCanti);
+                return;
+            }
+
+            const filtered = databaseCanti.filter(song => {
+                return song.titolo.toLowerCase().includes(query) || 
+                       song.testo.toLowerCase().includes(query);
+            });
+            renderSongsList(filtered);
+        }
+
+		//        function showSongDetail(song) {
+        //    document.getElementById('list-view').classList.remove('active');
+        //    document.getElementById('detail-view').classList.add('active');
+        //    
+        //    document.getElementById('song-title').textContent = song.titolo;
+			// MODIFICA QUESTA RIGA: da .textContent a .innerHTML
+        //    document.getElementById('song-lyrics').innerHTML = song.testo;
+            // Per evidenziare i testi in modo ancora più evidente (ad esempio colorando i ritornelli o i titoli interni), 
+			// si può usare allo stesso modo il tag <span style="color: var(--accent); font-weight: bold;">Testo</span> 
+            
+			// Aggiorna il titolo della navbar superiore con il nome della canzone
+        //    document.getElementById('nav-title').textContent = song.titolo;
+        //    window.scrollTo(0,0);
+        //}
+							   
+        function showListView() {
+            document.getElementById('detail-view').classList.remove('active');
+            document.getElementById('list-view').classList.add('active');
+            document.getElementById('nav-title').textContent = "Libretto Canti - Nel Sigillo del Dio Vivente";
+        }
+
+        function changeFontSize(direction) {
+            currentFontSize += direction * 0.1;
+            // Limiti di sicurezza per il font (0.8rem a 2.5rem)
+            if (currentFontSize < 0.8) currentFontSize = 0.8;
+            if (currentFontSize > 2.5) currentFontSize = 2.5;
+            document.getElementById('song-lyrics').style.fontSize = currentFontSize + 'rem';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+        }
+		// Per evidenziare i testi in modo ancora più evidente (ad esempio colorando i ritornelli o i titoli interni), 
+		// si può usare allo stesso modo il tag <span style="color: var(--accent); font-weight: bold;">Testo</span> 
+		
+        // Caricamento impostazioni iniziali salvate (Tema)
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Renderizza la lista completa all'avvio
+        renderSongsList(databaseCanti);
+
+ 
+        // REGISTRAZIONE DEL SERVICE WORKER ESTERNO
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('./sw.js')
+					.then((reg) => console.log('Service Worker registrato con successo con file esterno!', reg.scope))
+					.catch((err) => console.log('Errore nella registrazione del Service Worker:', err));
+			});
+		}
+		// SCORRIMENTO BARRA BLU DEL titolo
+		let ultimoScorrimento = 0;
+const barraBlu = document.querySelector('header');
+
+window.addEventListener('scroll', () => {
+    const scorrimentoAttuale = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Se scorri verso il basso e hai superato l'altezza dell'header, nascondilo
+    if (scorrimentoAttuale > ultimoScorrimento && scorrimentoAttuale > 60) {
+        barraBlu.style.top = '-70px'; // Spinge la barra fuori dallo schermo
+    } else {
+        barraBlu.style.top = '0'; // Fa riapparire la barra
+    }
+    ultimoScorrimento = scorrimentoAttuale <= 0 ? 0 : scorrimentoAttuale;
+}, { passive: true });
+    </script>
+</body>
+</html>
