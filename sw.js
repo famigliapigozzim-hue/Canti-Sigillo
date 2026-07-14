@@ -1,4 +1,4 @@
-const CACHE_NAME = 'libretto-canti-cache-v2';
+const CACHE_NAME = 'libretto-canti-cache-v1';
 
 // 1. Quando l'app viene installata sul telefono, memorizza la pagina principale
 self.addEventListener('install', (e) => {
